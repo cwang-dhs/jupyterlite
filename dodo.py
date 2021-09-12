@@ -602,10 +602,9 @@ def task_version():
     yield dict(
         name="bump",
         doc="bump the version",
-        actions=[(U.bump_version,)],
+        actions=[U.bump_version],
         params=[{"name": "force", "short": "f", "default": False}],
         pos_arg="spec",
-        verbosity=1,
     )
 
     # TODO: how to get the version without the doit task printed?
@@ -1177,7 +1176,7 @@ class U:
 
     @staticmethod
     def bump_version(spec, force=False):
-        status = U.do("git status --porcelain").strip()
+        status = subprocess.check_output(["git", "status", "--porcelain"]).decode("utf-8").strip()
         if len(status) > 0:
             raise Exception("Must be in a clean git state with no untracked files")
 
@@ -1189,20 +1188,20 @@ class U:
             if not is_final:
                 raise Exception("Can only make a patch release from a final version")
 
-            U.do("bumpversion patch", quiet=True)
+            U.do("bumpversion", "patch")
             # switches to alpha
-            U.do("bumpversion release --allow-dirty", quiet=True)
+            U.do("bumpversion", "release", "--allow-dirty")
             # switches to beta
-            U.do("bumpversion release --allow-dirty", quiet=True)
+            U.do("bumpversion", "release", "--allow-dirty")
             # switches to rc.
-            U.do("bumpversion release --allow-dirty", quiet=True)
+            U.do("bumpversion", "release", "--allow-dirty")
             # switches to final.
 
             # Version the changed
             cmd = "jlpm run lerna version patch --no-push --force-publish --no-git-tag-version"
             if force:
                 cmd += " --yes"
-            U.do(cmd)
+            U.do(*cmd.split())
 
         def update(spec, force=False):
             # Make sure we have a valid version spec.
@@ -1219,7 +1218,7 @@ class U:
 
             # If this is a major release during the alpha cycle, bump just the Python version.
             if "a" in prev and spec == "major":
-                U.do(f"bumpversion {spec}")
+                U.do("bumpversion", spec)
                 return
 
             # Determine the version spec to use for lerna.
@@ -1244,14 +1243,15 @@ class U:
 
             # For a preminor release, we bump 10 minor versions so that we do
             # not conflict with versions during minor releases of the top level package.
+            cmd = cmd.split()
             if lerna_version == "preminor":
                 for i in range(10):
-                    U.do(cmd)
+                    U.do(*cmd)
             else:
-                U.do(cmd)
+                U.do(*cmd)
 
             # Bump the version.
-            U.do(f"bumpversion {spec} --allow-dirty")
+            U.do("bumpversion", spec, "--allow-dirty")
 
         if spec == "patch":
             patch(force)
