@@ -1176,9 +1176,10 @@ class U:
         )
 
     @staticmethod
-    def bump_version(pos, force=True):
+    def bump_version(pos):
         status = run("git status --porcelain")
         spec = pos[0]
+        force = True
         if len(status) > 0:
             raise Exception("Must be in a clean git state with no untracked files")
 
