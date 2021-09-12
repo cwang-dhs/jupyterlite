@@ -10,7 +10,6 @@ from hashlib import sha256
 from pathlib import Path
 
 import doit
-from jupyter_releaser.util import is_prerelease, run
 
 
 def task_env():
@@ -1177,6 +1176,10 @@ class U:
 
     @staticmethod
     def bump_version(pos):
+        # TODO: avoid dependency on jupyter_releaser?
+        # puts the import here so it does not fail on RTD (jupyter-releaser not on conda)
+        from jupyter_releaser.util import is_prerelease, run
+
         status = run("git status --porcelain")
         spec = pos[0]
         force = True
