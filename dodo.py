@@ -76,7 +76,7 @@ def task_lint():
         name="version:js:lite",
         doc="check jupyter-lite.json version vs package.json",
         file_dep=[P.APP_JUPYTERLITE_JSON, P.APP_PACKAGE_JSON],
-        actions=[lambda: D.APP_VERSION in P.APP_JUPYTERLITE_JSON],
+        actions=[lambda: D.APP_VERSION in P.APP_JUPYTERLITE_JSON.read_text(**C.ENC)],
     )
 
     yield U.ok(
@@ -1269,9 +1269,7 @@ class U:
         # save the new version to the top-level package.json
         root_json = json.loads(P.ROOT_PACKAGE_JSON.read_text(**C.ENC))
         root_json["version"] = new_version
-        P.ROOT_PACKAGE_JSON.write_text(
-            json.dumps(root_json, indent=2), **C.ENC
-        )
+        P.ROOT_PACKAGE_JSON.write_text(json.dumps(root_json, indent=2), **C.ENC)
 
 
 # environment overloads
