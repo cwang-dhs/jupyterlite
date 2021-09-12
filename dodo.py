@@ -604,7 +604,7 @@ def task_version():
         doc="bump the version",
         actions=[U.bump_version],
         params=[{"name": "force", "short": "f", "default": False}],
-        pos_arg="spec",
+        pos_arg="pos",
     )
 
     # TODO: how to get the version without the doit task printed?
@@ -1175,8 +1175,9 @@ class U:
         )
 
     @staticmethod
-    def bump_version(spec, force=True):
+    def bump_version(pos, force=True):
         status = subprocess.check_output(["git", "status", "--porcelain"]).decode("utf-8").strip()
+        spec = pos[0]
         if len(status) > 0:
             raise Exception("Must be in a clean git state with no untracked files")
 
