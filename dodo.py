@@ -1175,7 +1175,7 @@ class U:
         )
 
     @staticmethod
-    def bump_version(spec, force=False):
+    def bump_version(spec, force=True):
         status = subprocess.check_output(["git", "status", "--porcelain"]).decode("utf-8").strip()
         if len(status) > 0:
             raise Exception("Must be in a clean git state with no untracked files")
@@ -1203,7 +1203,7 @@ class U:
                 cmd += " --yes"
             U.do(*cmd.split())
 
-        def update(spec, force=False):
+        def update():
             # Make sure we have a valid version spec.
             if spec not in options:
                 raise Exception(f"Version spec must be one of: {options}")
@@ -1254,10 +1254,10 @@ class U:
             U.do("bumpversion", spec, "--allow-dirty")
 
         if spec == "patch":
-            patch(force)
+            patch()
             return
 
-        update(spec, force)
+        update()
 
 
 # environment overloads
