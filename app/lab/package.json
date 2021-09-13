@@ -259,7 +259,10 @@
       "react-dom",
       "yjs"
     ],
-    "mimeExtensions": {},
+    "mimeExtensions": {
+      "@jupyterlab/json-extension": "",
+      "@jupyterlab/vega5-extension": ""
+    },
     "linkedPackages": {}
   }
 }
