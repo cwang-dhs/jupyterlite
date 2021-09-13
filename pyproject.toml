@@ -16,4 +16,4 @@ after-check-npm = ["doit dist"]
 before-draft-release = ["rm dist/jupyterlite-app-*.tgz"]
 
 [tool.jupyter-releaser.options]
-version-cmd = "doit version:bump"
+version-cmd = "python scripts/bump-version.py --force"

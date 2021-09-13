@@ -598,28 +598,6 @@ def task_test():
         )
 
 
-def task_version():
-    yield dict(
-        name="bump",
-        doc="bump the version",
-        actions=[
-            lambda pos, force: U.do(
-                sys.executable, "scripts/bump-version.py", "--force", force, *pos
-            )
-        ],
-        params=[{"name": "force", "short": "f", "default": False}],
-        pos_arg="pos",
-    )
-
-    # TODO: how to get the version without the doit task printed?
-    # yield dict(
-    #     title=lambda _: None,
-    #     name="get",
-    #     doc="get the version",
-    #     actions=[lambda: print(D.PY_VERSION)],
-    # )
-
-
 class C:
     NAME = "jupyterlite"
     APPS = ["retro", "lab"]
