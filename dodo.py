@@ -1175,7 +1175,9 @@ class U:
             for name in packages:
                 package_json = P.ROOT / "node_modules" / name / "package.json"
                 data = json.loads(package_json.read_text(**C.ENC))
-                prefix = '~' if re.search('^(@jupyter|@retrolab|@lumino).*', name) else '^'
+                prefix = (
+                    "~" if re.search("^(@jupyter|@retrolab|@lumino).*", name) else "^"
+                )
                 app["resolutions"][name] = f"{prefix}{data['version']}"
 
             app["resolutions"] = {
